@@ -8,9 +8,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
+
     return Scaffold(
       body: FutureBuilder(
-        future: DatabaseProvider().getItems(),
+        future: dbProvider.getItems(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return ListView.builder(

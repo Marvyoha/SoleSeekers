@@ -3,15 +3,17 @@ import 'package:flutter/foundation.dart';
 import 'package:sole_seekers/models/shoes_model.dart';
 
 class DatabaseProvider extends ChangeNotifier {
+  get fullDb => getItems();
+
   Future<List<Item>> getItems() async {
     var items = <Item>[];
 
     var snapshot =
-        await FirebaseFirestore.instance.collection('catalogs').limit(6).get();
+        await FirebaseFirestore.instance.collection('catalogs').limit(5).get();
 
     for (var doc in snapshot.docs) {
       items.add(Item(
-          id: doc.id,
+          id: doc['id'],
           image: doc['image'],
           description: doc['description'],
           price: doc['price'],
@@ -19,7 +21,10 @@ class DatabaseProvider extends ChangeNotifier {
           brand: doc['brand'],
           name: doc['name']));
     }
-
+    items.shuffle();
+    if (kDebugMode) {
+      print('Items fetched.');
+    }
     return items;
   }
 
