@@ -1,82 +1,52 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sole_seekers/models/shoes_model.dart';
+
+import '../models/shoes_model.dart';
 
 class DatabaseProvider extends ChangeNotifier {
-  get fullDb => getItems();
+  List<Item> _fullDb = [];
+  DocumentSnapshot? _lastDocument;
+  bool _hasMoreItems = true;
+
+  List<Item> get fullDb => _fullDb;
+  bool get hasMoreItems => _hasMoreItems;
 
   Future<List<Item>> getItems() async {
-    var items = <Item>[];
+    if (!_hasMoreItems) return [];
 
-    var snapshot =
-        await FirebaseFirestore.instance.collection('catalogs').limit(5).get();
+    Query query = FirebaseFirestore.instance
+        .collection('catalogs')
+        .orderBy('id')
+        .limit(12);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+      debugPrint('Database Log: Fetching another query.');
+    }
 
-    for (var doc in snapshot.docs) {
-      items.add(Item(
-          id: doc['id'],
-          image: doc['image'],
-          description: doc['description'],
-          price: doc['price'],
-          gender: doc['gender'],
-          brand: doc['brand'],
-          name: doc['name']));
+    var snapshot = await query.get();
+    if (snapshot.docs.isEmpty) {
+      debugPrint('Database Log: No remaining items.');
+      _hasMoreItems = false;
+      return [];
     }
-    items.shuffle();
-    if (kDebugMode) {
-      print('Items fetched.');
-    }
+
+    _lastDocument = snapshot.docs.last;
+
+    var items = snapshot.docs.map((doc) {
+      return Item(
+        id: doc['id'],
+        image: doc['image'],
+        description: doc['description'],
+        price: doc['price'],
+        gender: doc['gender'],
+        brand: doc['brand'],
+        name: doc['name'],
+      );
+    }).toList();
+
+    _fullDb.addAll(items);
+    debugPrint('Database Log: Data has been fetched.');
+    notifyListeners();
     return items;
   }
-
-  // List<ShoesModel> _shuffled = [];
-  // List<ShoesModel> get shuffled => _shuffled;
-
-  // Future<void> shuffleShoes() async {
-  //   var raw = allShoes();
-  //   _shuffled = [];
-  //   _shuffled = raw as List<ShoesModel>;
-  //   _shuffled.shuffle();
-  // }
-
-  // Future<List<ShoesModel>> allShoes() async {
-  //   final snapshot =
-  //       await FirebaseFirestore.instance.collection('catalogs').limit(10).get();
-  //   final allShoes =
-  //       snapshot.docs.map((e) => ShoesModel.fromSnapshot(e)).toList();
-  //   if (kDebugMode) {
-  //     print(allShoes);
-  //   }
-  //   return allShoes;
-  // }
-
-  // List<Map<String, dynamic>>? _shoeDb = [];
-  // List<Map<String, dynamic>>? _shuffledDb = [];
-
-  // List<Map<String, dynamic>>? get shoeDb => _shoeDb;
-  // List<Map<String, dynamic>>? get shuffledDb => _shuffledDb;
-
-  // Future<void> getShoeDb() async {
-  //   try {
-  //     var collection = await FirebaseFirestore.instance
-  //         .collection('catalogs')
-  //         .limit(10)
-  //         .get();
-  //     _shoeDb = [];
-  //     for (var element in collection.docs) {
-  //       _shoeDb!.add(element.data());
-  //     }
-  //     debugPrint(_shoeDb.toString());
-  //     notifyListeners();
-  //   } on FirebaseException catch (e) {
-  //     debugPrint('Firebase Error: ${e.message}');
-  //   }
-  // }
-
-  // Future<List<Map<String, dynamic>>?> updateShoeDb() async {
-  //   getShoeDb();
-  //   _shuffledDb = [];
-  //   _shuffledDb = _shoeDb;
-  //   _shuffledDb!.shuffle();
-  //   return _shuffledDb;
-  // }
 }
