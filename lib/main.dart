@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:sole_seekers/core/routes.dart';
 import 'package:sole_seekers/firebase_options.dart';
-import 'package:sole_seekers/providers/db_provider.dart';
-import 'package:sole_seekers/providers/theme_provider.dart';
-
-import 'screens/homepage.dart';
+import 'package:sole_seekers/core/providers/db_provider.dart';
+import 'package:sole_seekers/core/providers/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,11 +26,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SoleSeekers',
-      debugShowCheckedModeBanner: false,
-      theme: Provider.of<ThemeProvider>(context).themeMode,
-      home: const HomePage(),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      builder: (context, child) => MaterialApp(
+        title: 'SoleSeekers',
+        debugShowCheckedModeBanner: false,
+        onGenerateRoute: RouteGenerator.generateRoute,
+        initialRoute: 'splash',
+        theme: Provider.of<ThemeProvider>(context).themeMode,
+      ),
     );
   }
 }

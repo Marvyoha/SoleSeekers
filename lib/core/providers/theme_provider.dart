@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constant/color_palette.dart';
+import '../../constant/color_palette.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeData _themeMode = lightMode;

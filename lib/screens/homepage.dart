@@ -2,7 +2,7 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/db_provider.dart';
+import '../core/providers/db_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

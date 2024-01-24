@@ -1,5 +1,5 @@
 name: sole_seekers
-description: A new Flutter project.
+description: A final year Flutter project.
 publish_to: 'none'
 version: 0.1.0
 
@@ -12,12 +12,30 @@ dependencies:
   firebase_ui_firestore: ^1.6.1
   flutter:
     sdk: flutter
+  flutter_screenutil: ^5.9.0
   provider: ^6.1.1
+
+#   flutter_native_splash:
+ 
+# flutter_native_splash:
+#   android: true
+#   ios: true
+
+#   color: "#F7FAF7" 
+#   image: "assets/SoleSeekers Light.png"
+
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
+    sdk: flutter 
+  flutter_launcher_icons: "^0.13.1"
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/SoleSeekers app icon.jpg"
+
+  flutter_lints: ^2.0.0
+    
 flutter:
   uses-material-design: true
