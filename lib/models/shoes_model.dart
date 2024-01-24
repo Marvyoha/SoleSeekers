@@ -15,4 +15,27 @@ class Item {
       required this.gender,
       required this.brand,
       required this.name});
+
+  Item.fromJson(Map<String, Object?> json)
+      : this(
+          id: json['id']! as int,
+          price: json['price']! as int,
+          name: json['name']! as String,
+          image: json['image']! as String,
+          description: json['description']! as String,
+          gender: json['gender']! as String,
+          brand: json['brand']! as String,
+        );
+
+  Map<String, Object?> toJson() {
+    return {
+      'id': id,
+      'price': price,
+      'name': name,
+      'image': image,
+      'description': description,
+      'gender': gender,
+      'brand': brand,
+    };
+  }
 }

@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:sole_seekers/firebase_options.dart';
 import 'package:sole_seekers/providers/db_provider.dart';
+import 'package:sole_seekers/providers/theme_provider.dart';
 
 import 'screens/homepage.dart';
 
@@ -13,7 +14,8 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => DatabaseProvider())
+      ChangeNotifierProvider(create: (context) => DatabaseProvider()),
+      ChangeNotifierProvider(create: (context) => ThemeProvider())
     ],
     child: const MainApp(),
   ));
@@ -27,7 +29,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'SoleSeekers',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: const Color(0xffE3FDFD)),
+      theme: Provider.of<ThemeProvider>(context).themeMode,
       home: const HomePage(),
     );
   }

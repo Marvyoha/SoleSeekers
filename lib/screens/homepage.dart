@@ -1,7 +1,7 @@
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/shoes_model.dart';
 import '../providers/db_provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,44 +12,35 @@ class HomePage extends StatelessWidget {
     final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
 
     return Scaffold(
-      body: FutureBuilder(
-        future: dbProvider.getItems(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            if (snapshot.hasData) {
-              var items = snapshot.data as List<Item>;
-              return NotificationListener<ScrollNotification>(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent) {
-                    dbProvider.getItems(); // Fetch next batch of items
+        body: FirestoreQueryBuilder(
+            query: dbProvider.shoesDb.orderBy('id'),
+            builder: (context, snapshot, _) {
+              if (snapshot.isFetching) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Text('UI Error: ${snapshot.error}');
+              }
+              return ListView.builder(
+                itemCount: snapshot.docs.length,
+                itemBuilder: (context, index) {
+                  // if we reached the end of the currently obtained items, we try to
+                  // obtain more items
+                  if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
+                    // Tell FirestoreQueryBuilder to try to obtain more items.
+                    // It is safe to call this function from within the build method.
+                    snapshot.fetchMore();
                   }
-                  return true;
+
+                  final item = snapshot.docs[index];
+                  return ListTile(
+                    title: Text(item['name']),
+                    subtitle: Text(item['description']),
+                    leading: Image.network(item['image']),
+                    trailing: Text(item['id'].toString()),
+                  );
                 },
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    if (index == items.length) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    var item = items[index];
-                    return ListTile(
-                      title: Text(item.name),
-                      subtitle: Text(item.id.toString()),
-                      leading: Image.network(item.image),
-                      trailing: Text(item.price.toString()),
-                    );
-                  },
-                ),
               );
-            }
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
+            }));
   }
 }
