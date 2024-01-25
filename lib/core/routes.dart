@@ -5,7 +5,8 @@ import '../screens/auth_screens/forgot_password.dart';
 import '../screens/auth_screens/login.dart';
 import '../screens/auth_screens/signup.dart';
 import '../screens/homepage.dart';
-import '../screens/splashscreen.dart';
+import '../screens/misc_screens/on_boarding.dart';
+import '../screens/misc_screens/splashscreen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,6 +21,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const AuthChecker());
       case 'homePage':
         return MaterialPageRoute(builder: (_) => const HomePage());
+      case 'onBoarding':
+        return MaterialPageRoute(builder: (_) => const OnBoarding());
       case 'forgotPassword':
         return MaterialPageRoute(builder: (_) => const ForgotPassword());
       default:
