@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:sole_seekers/constant/color_palette.dart';
 import 'package:sole_seekers/core/routes.dart';
 import 'package:sole_seekers/firebase_options.dart';
 import 'package:sole_seekers/core/providers/db_provider.dart';
@@ -28,13 +29,15 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(375, 812),
+      designSize: const Size(360, 800),
       builder: (context, child) => MaterialApp(
         title: 'SoleSeekers',
         debugShowCheckedModeBanner: false,
         onGenerateRoute: RouteGenerator.generateRoute,
         initialRoute: 'splash',
+        // themeMode: ThemeMode.dark,
         theme: Provider.of<ThemeProvider>(context).themeMode,
+        // darkTheme: darkMode,
       ),
     );
   }

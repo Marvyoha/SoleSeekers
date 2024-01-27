@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sole_seekers/core/providers/theme_provider.dart';
 
 import '../../constant/global_variables.dart';
 
@@ -35,9 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 shape: CircleBorder(),
               ),
               child: Image.asset(
-                Provider.of<ThemeProvider>(context).isLight
-                    ? GlobalVariables.logoLight
-                    : GlobalVariables.logoDark,
+                GlobalVariables.logo,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           )),
