@@ -29,10 +29,10 @@ class AuthTextField extends StatelessWidget {
             borderSide:
                 BorderSide(color: Theme.of(context).colorScheme.secondary)),
         focusedBorder: OutlineInputBorder(
-            // borderRadius: BorderRadius.circular(10),
-            // borderSide: BorderSide(
-            //     color: Theme.of(context).colorScheme.background, width: 1.3),
-            ),
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary, width: 1.3),
+        ),
       ),
     );
   }
