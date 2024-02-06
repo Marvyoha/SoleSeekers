@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constant/global_variables.dart';
 
@@ -15,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Adding a delay before navigating to the next page
 
     Future.delayed(const Duration(milliseconds: 2000), () {
-      Navigator.pushReplacementNamed(context, 'onBoarding');
+      Navigator.pushReplacementNamed(context, 'authChecker');
     });
 
     return Scaffold(
@@ -27,8 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
-              width: 400,
-              height: 400,
+              width: 400.w,
+              height: 400.h,
               decoration: ShapeDecoration(
                 shape: CircleBorder(),
               ),

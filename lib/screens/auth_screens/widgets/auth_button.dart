@@ -5,7 +5,9 @@ import 'package:sole_seekers/constant/font_styles.dart';
 class AuthButton extends StatelessWidget {
   final void Function()? onTap;
   final String text;
-  const AuthButton({super.key, this.onTap, required this.text});
+  final bool isLoading;
+  const AuthButton(
+      {super.key, this.onTap, required this.text, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +26,18 @@ class AuthButton extends StatelessWidget {
             height: 49.h,
             width: 301.w,
             child: Center(
-              child: Text(
-                text,
-                style: WriteStyles.bodyMedium(context)
-                    .copyWith(color: Theme.of(context).colorScheme.background),
-              ),
+              child: isLoading
+                  ? Padding(
+                      padding: EdgeInsets.all(8.w),
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.background,
+                      ),
+                    )
+                  : Text(
+                      text,
+                      style: WriteStyles.bodyMedium(context).copyWith(
+                          color: Theme.of(context).colorScheme.background),
+                    ),
             ),
           ),
         ),

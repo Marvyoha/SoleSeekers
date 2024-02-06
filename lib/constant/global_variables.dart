@@ -16,10 +16,8 @@ class GlobalVariables {
     return MediaQuery.of(context).size.width;
   }
 
-  static EdgeInsetsGeometry normPadding =
-      EdgeInsets.symmetric(horizontal: 20.w);
-  static EdgeInsetsGeometry onBoardPadding =
-      EdgeInsets.fromLTRB(20.w, 0, 20.w, 0);
+  static EdgeInsetsGeometry normPadding = EdgeInsets.symmetric(horizontal: 20);
+  static EdgeInsetsGeometry onBoardPadding = EdgeInsets.fromLTRB(20, 0, 20, 0);
 
   static spaceLarge(BuildContext context, {bool isWidth = false}) {
     if (isWidth == true) {

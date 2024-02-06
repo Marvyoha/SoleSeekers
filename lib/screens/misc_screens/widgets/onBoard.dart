@@ -24,7 +24,7 @@ class OnBoard extends StatelessWidget {
           Text(
             phrase,
             textAlign: TextAlign.start,
-            style: WriteStyles.headerLarge(context).copyWith(fontSize: 29),
+            style: WriteStyles.headerLarge(context).copyWith(fontSize: 29.sp),
           ),
           Container(
               height: 280.h,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:sole_seekers/constant/font_styles.dart';
 import 'package:sole_seekers/constant/global_variables.dart';
+import 'package:sole_seekers/core/providers/services_provider.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_button.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_textfield..dart';
 
@@ -11,6 +13,13 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
+
+    var servicesProvider = Provider.of<ServicesProvider>(context);
+
+    Future<void> forgotPasswordLogic() async {
+      // Call signIn function from ServicesProvider
+      servicesProvider.resetPassword(emailController.text, context);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -54,11 +63,14 @@ class ForgotPassword extends StatelessWidget {
                 ),
                 GlobalVariables.spaceMedium(),
                 AuthTextField(
-                    obscureText: false,
-                    hintText: 'Email address',
-                    controller: emailController),
+                    hintText: 'Email address', controller: emailController),
                 SizedBox(height: 65.h),
-                AuthButton(text: 'Reset Password'),
+                AuthButton(
+                    text: 'Reset Password',
+                    onTap: forgotPasswordLogic,
+                    isLoading:
+                        Provider.of<ServicesProvider>(context, listen: true)
+                            .loader),
                 GlobalVariables.spaceMedium(),
                 Center(
                   child: Text.rich(TextSpan(children: [

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:sole_seekers/constant/font_styles.dart';
 import 'package:sole_seekers/constant/global_variables.dart';
+import 'package:sole_seekers/core/providers/services_provider.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_button.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_textfield..dart';
 
@@ -14,6 +16,14 @@ class SignUp extends StatelessWidget {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController confirmPasswordController = TextEditingController();
+
+    var servicesProvider = Provider.of<ServicesProvider>(context);
+
+    Future<void> signupLogic() async {
+      // Call signUp function from ServicesProvider
+      servicesProvider.signUp(emailController.text, passwordController.text,
+          confirmPasswordController.text, fullNameController.text, context);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +82,13 @@ class SignUp extends StatelessWidget {
                     hintText: 'Confirm Password',
                     controller: confirmPasswordController),
                 GlobalVariables.spaceMedium(),
-                AuthButton(text: 'Sign Up'),
+                AuthButton(
+                  text: 'Sign Up',
+                  onTap: signupLogic,
+                  isLoading:
+                      Provider.of<ServicesProvider>(context, listen: true)
+                          .loader,
+                ),
                 GlobalVariables.spaceMedium(),
                 Center(
                   child: Text.rich(TextSpan(children: [
