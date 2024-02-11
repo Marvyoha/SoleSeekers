@@ -7,12 +7,14 @@ import 'package:sole_seekers/core/providers/services_provider.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_button.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_textfield..dart';
 
+import 'widgets/privacy_policy_dialog.dart';
+
 class SignUp extends StatelessWidget {
   const SignUp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController fullNameController = TextEditingController();
+    TextEditingController userNameController = TextEditingController();
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController confirmPasswordController = TextEditingController();
@@ -22,12 +24,12 @@ class SignUp extends StatelessWidget {
     Future<void> signupLogic() async {
       // Call signUp function from ServicesProvider
       servicesProvider.signUp(emailController.text, passwordController.text,
-          confirmPasswordController.text, fullNameController.text, context);
+          confirmPasswordController.text, userNameController.text, context);
     }
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -66,7 +68,7 @@ class SignUp extends StatelessWidget {
                 ),
                 GlobalVariables.spaceMedium(),
                 AuthTextField(
-                    hintText: 'Full name', controller: fullNameController),
+                    hintText: 'User name', controller: userNameController),
                 GlobalVariables.spaceSmaller(),
                 AuthTextField(
                     obscureText: false,
@@ -79,6 +81,7 @@ class SignUp extends StatelessWidget {
                     controller: passwordController),
                 GlobalVariables.spaceSmaller(),
                 AuthTextField(
+                    obscureText: true,
                     hintText: 'Confirm Password',
                     controller: confirmPasswordController),
                 GlobalVariables.spaceMedium(),
@@ -90,18 +93,21 @@ class SignUp extends StatelessWidget {
                           .loader,
                 ),
                 GlobalVariables.spaceMedium(),
-                Center(
-                  child: Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text:
-                            'By pressing \“Sign Up\”, you accept the \nconditions of  ',
-                        style: WriteStyles.bodySmall(context)),
-                    TextSpan(
-                      text: 'Privacy Policy',
-                      style: WriteStyles.bodySmall(context).copyWith(
-                          color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ])),
+                GestureDetector(
+                  onTap: () => privacyPolicy(context),
+                  child: Center(
+                    child: Text.rich(TextSpan(children: [
+                      TextSpan(
+                          text:
+                              'By pressing \“Sign Up\”, you accept the \nconditions of  ',
+                          style: WriteStyles.bodySmall(context)),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: WriteStyles.bodySmall(context).copyWith(
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ])),
+                  ),
                 ),
                 GlobalVariables.spaceMedium(),
               ],

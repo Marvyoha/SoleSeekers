@@ -28,7 +28,7 @@ class AuthButton extends StatelessWidget {
             child: Center(
               child: isLoading
                   ? Padding(
-                      padding: EdgeInsets.all(8.w),
+                      padding: EdgeInsets.all(3.w),
                       child: CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.background,
                       ),

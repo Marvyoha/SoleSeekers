@@ -5,8 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:sole_seekers/core/providers/services_provider.dart';
 import 'package:sole_seekers/core/routes.dart';
 import 'package:sole_seekers/firebase_options.dart';
-import 'package:sole_seekers/core/providers/db_provider.dart';
 import 'package:sole_seekers/core/providers/theme_provider.dart';
+
+import 'constant/color_palette.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,6 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => ServicesProvider()),
-      ChangeNotifierProvider(create: (context) => DatabaseProvider()),
       ChangeNotifierProvider(create: (context) => ThemeProvider())
     ],
     child: const MainApp(),
@@ -36,9 +36,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         onGenerateRoute: RouteGenerator.generateRoute,
         initialRoute: 'splash',
-        // themeMode: ThemeMode.dark,
         theme: Provider.of<ThemeProvider>(context).themeMode,
-        // darkTheme: darkMode,
       ),
     );
   }

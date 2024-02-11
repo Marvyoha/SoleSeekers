@@ -2,28 +2,45 @@ import 'package:carbon_icons/carbon_icons.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sole_seekers/constant/font_styles.dart';
 import 'package:sole_seekers/core/providers/services_provider.dart';
+import 'package:sole_seekers/screens/main_screens/widgets/delete_account_dialog.dart';
 
-import '../../core/providers/db_provider.dart';
+import '../../core/providers/theme_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
     final servicesProvider =
         Provider.of<ServicesProvider>(context, listen: false);
+    servicesProvider.getCurrentUserDoc();
+
     return Scaffold(
-        appBar: AppBar(actions: [
-          IconButton(
-              onPressed: () {
-                servicesProvider.signOut(context);
-              },
-              icon: Icon(CarbonIcons.logout))
-        ]),
+        appBar: AppBar(
+            leading: IconButton(
+                onPressed: () {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleTheme();
+                },
+                icon: Icon(CarbonIcons.light)),
+            backgroundColor: Colors.transparent,
+            title: Text('Hello ${servicesProvider.user?.displayName}'),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    deleteAccountDialog(context, servicesProvider);
+                  },
+                  icon: Icon(CarbonIcons.delete)),
+              IconButton(
+                  onPressed: () {
+                    servicesProvider.signOut(context);
+                  },
+                  icon: Icon(CarbonIcons.logout))
+            ]),
         body: FirestoreQueryBuilder(
-            query: dbProvider.shoesDb.orderBy('id'),
+            query: servicesProvider.shoesDb.orderBy('id').limit(5),
             builder: (context, snapshot, _) {
               if (snapshot.isFetching) {
                 return const Center(child: CircularProgressIndicator());
@@ -31,7 +48,47 @@ class HomePage extends StatelessWidget {
               if (snapshot.hasError) {
                 return Text('Pagination Error: ${snapshot.error}');
               }
-              return ListView.builder(
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, crossAxisSpacing: 6, mainAxisSpacing: 6),
+                itemCount: snapshot.docs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  // if we reached the end of the currently obtained items, we try to
+                  // obtain more items
+                  if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
+                    // Telling FirestoreQueryBuilder to try to obtain more items.
+                    // It is safe to call this function from within the build method.
+                    snapshot.fetchMore();
+                  }
+                  final item = snapshot.docs[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(item['image'])),
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            item['id'].toString(),
+                            style: WriteStyles.cardSubtitle(context).copyWith(),
+                          ),
+                          Text(
+                            item['name'],
+                            style: WriteStyles.cardSubtitle(context).copyWith(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }));
+  }
+}
+/*  ListView.builder(
                 itemCount: snapshot.docs.length,
                 itemBuilder: (context, index) {
                   // if we reached the end of the currently obtained items, we try to
@@ -51,6 +108,4 @@ class HomePage extends StatelessWidget {
                   );
                 },
               );
-            }));
-  }
-}
+              */

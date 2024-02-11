@@ -7,6 +7,8 @@ import 'package:sole_seekers/core/providers/services_provider.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_button.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/auth_textfield..dart';
 
+import 'widgets/privacy_policy_dialog.dart';
+
 class ForgotPassword extends StatelessWidget {
   const ForgotPassword({super.key});
 
@@ -72,18 +74,21 @@ class ForgotPassword extends StatelessWidget {
                         Provider.of<ServicesProvider>(context, listen: true)
                             .loader),
                 GlobalVariables.spaceMedium(),
-                Center(
-                  child: Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text:
-                            'By pressing \“Sign In\”, you accept the \nconditions of  ',
-                        style: WriteStyles.bodySmall(context)),
-                    TextSpan(
-                      text: 'Privacy Policy',
-                      style: WriteStyles.bodySmall(context).copyWith(
-                          color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ])),
+                GestureDetector(
+                  onTap: () => privacyPolicy(context),
+                  child: Center(
+                    child: Text.rich(TextSpan(children: [
+                      TextSpan(
+                          text:
+                              'By pressing \“Sign In\”, you accept the \nconditions of  ',
+                          style: WriteStyles.bodySmall(context)),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: WriteStyles.bodySmall(context).copyWith(
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ])),
+                  ),
                 ),
                 SizedBox(height: 101.h),
                 Align(

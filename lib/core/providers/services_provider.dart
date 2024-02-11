@@ -1,12 +1,19 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../models/shoes_model.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 class ServicesProvider extends ChangeNotifier {
+  final _shoesDb = FirebaseFirestore.instance
+      .collection('catalogs')
+      .withConverter<Item>(
+          fromFirestore: (snapshot, _) => Item.fromJson(snapshot.data()!),
+          toFirestore: (item, _) => item.toJson());
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? docId;
@@ -19,7 +26,9 @@ class ServicesProvider extends ChangeNotifier {
   User? get user => _auth.currentUser;
   Map<String, dynamic>? get currentUserDoc => _currentUserDoc;
   bool get loader => _loader;
+  CollectionReference<Item> get shoesDb => _shoesDb;
 
+  //Setters
   set loader(bool newLoader) {
     _loader = newLoader;
   }
@@ -28,7 +37,7 @@ class ServicesProvider extends ChangeNotifier {
     _currentUserDoc = newUserDoc;
   }
 
-// Firebase Authentication functions
+// FIREBASE AUTHENTICATION FUNCTIONS
   Future<void> signIn(
       String email, String password, BuildContext context) async {
     loader = true;
@@ -74,7 +83,7 @@ class ServicesProvider extends ChangeNotifier {
   }
 
   Future<void> signUp(String email, String password, String confirmPassword,
-      String fullname, BuildContext context) async {
+      String username, BuildContext context) async {
     loader = true;
     notifyListeners();
     if (confirmPassword == password) {
@@ -82,10 +91,11 @@ class ServicesProvider extends ChangeNotifier {
         await _auth.createUserWithEmailAndPassword(
             email: email.trim(), password: password.trim());
 
-        storeUserDetails(email: email, fullname: fullname);
-
-        signOut(context);
-
+        storeUserDetails(email: email, username: username);
+        Navigator.pushReplacementNamed(
+          context,
+          'login',
+        );
         notifyListeners();
       } on FirebaseAuthException catch (e) {
         debugPrint('Authentication Error: [${e.code}]' + ' ${e.message}');
@@ -163,37 +173,63 @@ class ServicesProvider extends ChangeNotifier {
 
   Future<void> signOut(BuildContext context) async {
     await _auth.signOut();
-    Navigator.pushReplacementNamed(context, 'login');
+    Future.delayed(const Duration(milliseconds: 1700), () {
+      Navigator.pushReplacementNamed(context, 'login');
+    });
     notifyListeners();
   }
 
-// Firebase Cloud firestore functions
-  Future<void> storeUserDetails(
-      {required String email, required String fullname}) async {
+  Future<void> deleteUser(BuildContext context, String password) async {
+    loader = true;
+    notifyListeners();
     try {
+      if (user != null) {
+        // TO DELETE FROM FIREBASE AUTH
+        var credential = await EmailAuthProvider.credential(
+          email: user!.email!,
+          password: password,
+        );
+        await user?.reauthenticateWithCredential(credential);
+        await user?.delete();
+
+        // TO DELETE FROM FIREBASE FIRESTORE
+        await firestore?.collection('users').doc(docId).delete();
+
+        // TO CLEAR LOCAL DATA
+        currentUserDoc = {};
+        docId = '';
+      }
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Deletion Error: ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Center(
+            child: Text(
+              e.message!,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    }
+    loader = false;
+    notifyListeners();
+  }
+
+// FIREBASE CLOUD FIRESTORE DATABASE FUNTIONS
+  Future<void> storeUserDetails(
+      {required String email, required String username}) async {
+    try {
+      await user?.updateDisplayName(username);
       await firestore?.collection('users').add({
+        'uid': user?.uid,
         'email': email.trim(),
-        'name': fullname.trim(),
+        'username': username.trim(),
         'isFavorited': [],
         'checkout': [],
         'purchased': [],
       });
-    } on FirebaseException catch (e) {
-      debugPrint('Database Error: [${e.code}]' + ' ${e.message}');
-    }
-  }
-
-  Future<void> updateUserDetails({
-    required String? documentId,
-    required String? fullname,
-  }) async {
-    try {
-      getCurrentUserDoc();
-      if (documentId != null) {
-        await firestore?.collection('users').doc(documentId).update({
-          'name': fullname?.trim(),
-        });
-      }
     } on FirebaseException catch (e) {
       debugPrint('Database Error: [${e.code}]' + ' ${e.message}');
     }
@@ -204,7 +240,7 @@ class ServicesProvider extends ChangeNotifier {
       var collection = await firestore?.collection('users').get();
       if (collection != null) {
         for (var element in collection.docs) {
-          if (element['email'] == user?.email) {
+          if (element['uid'] == user?.uid) {
             docId = element.id;
             _currentUserDoc = element.data();
             break;
@@ -217,14 +253,18 @@ class ServicesProvider extends ChangeNotifier {
     return currentUserDoc;
   }
 
-  Future<void> deleteUser() async {
+  Future<void> updateUserName({
+    required String? username,
+  }) async {
     try {
-      firestore?.collection('users').doc(docId).delete();
-      currentUserDoc = {};
-      docId = '';
-      user?.delete();
+      if (docId != null) {
+        await user?.updateDisplayName(username);
+        await firestore?.collection('users').doc(docId).update({
+          'username': username?.trim(),
+        });
+      }
     } on FirebaseException catch (e) {
-      debugPrint('Deletion Error: [${e.code}]' + ' ${e.message}');
+      debugPrint('Database Error: [${e.code}]' + ' ${e.message}');
     }
   }
 }
