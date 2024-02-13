@@ -2,11 +2,10 @@ import 'package:carbon_icons/carbon_icons.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sole_seekers/constant/font_styles.dart';
-import 'package:sole_seekers/core/providers/services_provider.dart';
-import 'package:sole_seekers/screens/main_screens/widgets/delete_account_dialog.dart';
 
-import '../../core/providers/theme_provider.dart';
+import '../../constant/font_styles.dart';
+import '../../core/providers/services_provider.dart';
+import 'widgets/delete_account_dialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -21,10 +20,9 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
             leading: IconButton(
                 onPressed: () {
-                  Provider.of<ThemeProvider>(context, listen: false)
-                      .toggleTheme();
+                  Navigator.pushNamed(context, 'searchPage');
                 },
-                icon: Icon(CarbonIcons.light)),
+                icon: Icon(CarbonIcons.search)),
             backgroundColor: Colors.transparent,
             title: Text('Hello ${servicesProvider.user?.displayName}'),
             actions: [
@@ -40,7 +38,7 @@ class HomePage extends StatelessWidget {
                   icon: Icon(CarbonIcons.logout))
             ]),
         body: FirestoreQueryBuilder(
-            query: servicesProvider.shoesDb.orderBy('id').limit(5),
+            query: servicesProvider.shoesPGDb.orderBy('id'),
             builder: (context, snapshot, _) {
               if (snapshot.isFetching) {
                 return const Center(child: CircularProgressIndicator());

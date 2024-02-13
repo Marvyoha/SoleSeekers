@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sole_seekers/constant/font_styles.dart';
 import 'package:sole_seekers/core/providers/services_provider.dart';
-import 'package:sole_seekers/screens/auth_screens/widgets/auth_button.dart';
-import 'package:sole_seekers/screens/auth_screens/widgets/auth_textfield..dart';
+import 'package:sole_seekers/constant/widgets/custom_button.dart';
+import 'package:sole_seekers/constant/widgets/custom_textfield.dart';
 
 deleteAccountDialog(BuildContext context, ServicesProvider provider) {
   TextEditingController passwordController = TextEditingController();
@@ -14,12 +14,12 @@ deleteAccountDialog(BuildContext context, ServicesProvider provider) {
           title: Text("Are you sure want to delete your account?",
               style: WriteStyles.headerMedium(context)
                   .copyWith(color: Theme.of(context).colorScheme.primary)),
-          content: AuthTextField(
+          content: CustomTextField(
               obscureText: true,
               hintText: 'Enter Password',
               controller: passwordController),
           actions: [
-            AuthButton(
+            CustomButton(
                 text: 'Delete Account',
                 isLoading: provider.loader,
                 onTap: () {

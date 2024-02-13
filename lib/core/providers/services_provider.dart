@@ -8,7 +8,7 @@ import '../models/shoes_model.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 class ServicesProvider extends ChangeNotifier {
-  final _shoesDb = FirebaseFirestore.instance
+  final _shoesPGDb = FirebaseFirestore.instance
       .collection('catalogs')
       .withConverter<Item>(
           fromFirestore: (snapshot, _) => Item.fromJson(snapshot.data()!),
@@ -17,6 +17,8 @@ class ServicesProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? docId;
+  List<Map<String, dynamic>>? searchResults;
+  List? _catalogs;
   Map<String, dynamic>? _currentUserDoc;
   bool _loader = false;
 
@@ -24,9 +26,10 @@ class ServicesProvider extends ChangeNotifier {
   FirebaseFirestore? get firestore => _firestore;
   FirebaseAuth? get auth => _auth;
   User? get user => _auth.currentUser;
+  List? get catalogs => _catalogs;
   Map<String, dynamic>? get currentUserDoc => _currentUserDoc;
   bool get loader => _loader;
-  CollectionReference<Item> get shoesDb => _shoesDb;
+  CollectionReference<Item> get shoesPGDb => _shoesPGDb;
 
   //Setters
   set loader(bool newLoader) {
@@ -218,6 +221,14 @@ class ServicesProvider extends ChangeNotifier {
   }
 
 // FIREBASE CLOUD FIRESTORE DATABASE FUNTIONS
+
+  getCatalogs() async {
+    QuerySnapshot<Map<String, dynamic>>? data =
+        await firestore?.collection('catalogs').orderBy('id').get();
+    _catalogs = data?.docs;
+    return catalogs;
+  }
+
   Future<void> storeUserDetails(
       {required String email, required String username}) async {
     try {
@@ -266,5 +277,29 @@ class ServicesProvider extends ChangeNotifier {
     } on FirebaseException catch (e) {
       debugPrint('Database Error: [${e.code}]' + ' ${e.message}');
     }
+  }
+
+  Future<List<Map<String, dynamic>>?> searchFunction(
+      String? name, String? brand, String? gender, int? price) async {
+    searchResults = [];
+    Query<Map<String, dynamic>>? query;
+    if (name != null) {
+      query = firestore?.collection('catalogs').where('name', isEqualTo: name);
+    }
+    if (brand != null) {
+      query =
+          firestore?.collection('catalogs').where('brand', isEqualTo: brand);
+    }
+    if (gender != null) {
+      query =
+          firestore?.collection('catalogs').where('gender', isEqualTo: gender);
+    }
+    if (price != null) {
+      query =
+          firestore?.collection('catalogs').where('price', isEqualTo: price);
+    }
+    QuerySnapshot<Map<String, dynamic>>? snapshot = await query?.get();
+    searchResults = snapshot?.docs as List<Map<String, dynamic>>;
+    return searchResults;
   }
 }

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:sole_seekers/constant/font_styles.dart';
 import 'package:sole_seekers/constant/global_variables.dart';
 import 'package:sole_seekers/core/providers/services_provider.dart';
-import 'package:sole_seekers/screens/auth_screens/widgets/auth_button.dart';
-import 'package:sole_seekers/screens/auth_screens/widgets/auth_textfield..dart';
+import 'package:sole_seekers/constant/widgets/custom_button.dart';
+import 'package:sole_seekers/constant/widgets/custom_textfield.dart';
 import 'package:sole_seekers/screens/auth_screens/widgets/privacy_policy_dialog.dart';
 
 class Login extends StatelessWidget {
@@ -57,12 +57,12 @@ class Login extends StatelessWidget {
                   textAlign: TextAlign.start,
                 ),
                 GlobalVariables.spaceMedium(),
-                AuthTextField(
+                CustomTextField(
                     obscureText: false,
                     hintText: 'Email address',
                     controller: emailController),
                 GlobalVariables.spaceMedium(),
-                AuthTextField(
+                CustomTextField(
                     obscureText: true,
                     hintText: 'Password',
                     controller: passwordController),
@@ -83,7 +83,7 @@ class Login extends StatelessWidget {
                   ],
                 ),
                 GlobalVariables.spaceMedium(),
-                AuthButton(
+                CustomButton(
                   text: 'Sign In',
                   isLoading:
                       Provider.of<ServicesProvider>(context, listen: true)

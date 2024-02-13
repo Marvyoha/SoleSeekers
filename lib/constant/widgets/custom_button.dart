@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sole_seekers/constant/font_styles.dart';
 
-class AuthButton extends StatelessWidget {
+class CustomButton extends StatelessWidget {
   final void Function()? onTap;
   final String text;
   final bool isLoading;
-  const AuthButton(
+  const CustomButton(
       {super.key, this.onTap, required this.text, this.isLoading = false});
 
   @override

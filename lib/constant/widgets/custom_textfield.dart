@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../../../constant/font_styles.dart';
+import '../font_styles.dart';
 
-class AuthTextField extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
+  final void Function(String)? onChanged;
   final bool obscureText;
   final String? hintText;
   final TextEditingController? controller;
 
-  const AuthTextField(
+  const CustomTextField(
       {super.key,
       this.obscureText = false,
       required this.hintText,
-      required this.controller});
+      required this.controller,
+      this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: onChanged,
       style: TextStyle(color: Theme.of(context).colorScheme.primary),
       controller: controller,
       obscureText: obscureText,
