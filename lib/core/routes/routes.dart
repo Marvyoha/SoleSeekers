@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../screens/auth_screens/auth_checker.dart';
-import '../screens/auth_screens/forgot_password.dart';
-import '../screens/auth_screens/login.dart';
-import '../screens/auth_screens/signup.dart';
-import '../screens/main_screens/homepage.dart';
-import '../screens/main_screens/widgets/searchpage.dart';
-import '../screens/misc_screens/on_boarding.dart';
-import '../screens/misc_screens/splashscreen.dart';
+import '../../screens/auth_screens/auth_checker.dart';
+import '../../screens/auth_screens/forgot_password.dart';
+import '../../screens/auth_screens/login.dart';
+import '../../screens/auth_screens/signup.dart';
+import '../../screens/main_screens/homepage.dart';
+import '../../screens/main_screens/widgets/searchpage.dart';
+import '../../screens/misc_screens/on_boarding.dart';
+import '../../screens/misc_screens/splashscreen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

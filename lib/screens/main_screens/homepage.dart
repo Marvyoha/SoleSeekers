@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../constant/font_styles.dart';
 import '../../core/providers/services_provider.dart';
+import '../../core/providers/theme_provider.dart';
 import 'widgets/delete_account_dialog.dart';
 
 class HomePage extends StatelessWidget {
@@ -26,6 +27,12 @@ class HomePage extends StatelessWidget {
             backgroundColor: Colors.transparent,
             title: Text('Hello ${servicesProvider.user?.displayName}'),
             actions: [
+              IconButton(
+                  onPressed: () {
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .toggleTheme();
+                  },
+                  icon: Icon(CarbonIcons.light)),
               IconButton(
                   onPressed: () {
                     deleteAccountDialog(context, servicesProvider);

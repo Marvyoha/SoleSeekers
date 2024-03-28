@@ -19,7 +19,6 @@ class AuthChecker extends StatelessWidget {
       initialData: User,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          servicesProvider.getCatalogs();
           return const HomePage();
         } else {
           return const OnBoarding();

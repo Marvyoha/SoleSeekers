@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:sole_seekers/core/providers/services_provider.dart';
-import 'package:sole_seekers/core/routes.dart';
+import 'package:sole_seekers/core/routes/routes.dart';
 import 'package:sole_seekers/firebase_options.dart';
 import 'package:sole_seekers/core/providers/theme_provider.dart';
 
